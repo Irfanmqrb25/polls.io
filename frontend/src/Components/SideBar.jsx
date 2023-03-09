@@ -8,7 +8,7 @@ import { IoSettingsOutline } from 'react-icons/io5';
 import { FaChevronCircleRight } from 'react-icons/fa';
 import Avvvatars from 'avvvatars-react';
 import { useLogout } from '../hooks/useLogout';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { useAuthContext } from '../hooks/useAuthContext';
 
@@ -18,6 +18,7 @@ export default function SideBar() {
     const [open, setOpen] = useState(true);
     const decoded = jwtDecode(user);
     const location = useLocation();
+    const navigate = useNavigate();
 
     const Logout = () => {
         logout();
@@ -30,7 +31,6 @@ export default function SideBar() {
         { icon: <BsTrash />, title: 'Trash', to: '/trash' },
         { icon: <RxHome />, title: 'Room', gap: true, to: '/room' },
         { icon: <IoSettingsOutline />, title: 'Settings', gap: true, to: '/settings' },
-        { icon: <FiLogOut />, title: 'Logout', onClick: Logout },
     ]
 
     return (
@@ -41,7 +41,7 @@ export default function SideBar() {
                     <img src={brand} alt="" className={`cursor-pointer duration-500 ${open && "rotate-[360deg]"}`} />
                     <h1 className={`font-bold font-lato text-3xl tracking-wider text-[#FBF8EE] origin-left duration-300 ${!open && "scale-0"}`}>OLLS.IO</h1>
                 </div>
-                <ul className="pt-7 2xl:pt-3">
+                <ul className="pt-7 2xl:pt-3 flex flex-col">
                     {menus.map((menu, i) => (
                         <Link
                             to={menu.to}
@@ -55,6 +55,10 @@ export default function SideBar() {
                             <p className={`duration-300 origin-left text-[#FBF8EE] ${!open && "hidden"}`}>{menu.title}</p>
                         </Link>
                     ))}
+                    <button onClick={Logout} className='flex items-center space-x-4 cursor-pointer hover:bg-[#DFC298] mt-3 ease-in-out duration-300 rounded-md p-1 py-2'>
+                        <span className='text-2xl text-[#FBF8EE] pl-[10px]'><FiLogOut /></span>
+                        <p className={`duration-300 origin-left text-[#FBF8EE] ${!open && "hidden"}`}>Logout</p>
+                    </button>
                 </ul>
                 <div className='flex space-x-3 pl-2 pt-5 items-center'>
                     <span className={`border-2 border-[#DFC298] rounded-[50%] ${open && "rotate-[360deg]"}`}><Avvvatars size={36} value={decoded.name} /></span>

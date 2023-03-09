@@ -13,7 +13,7 @@ export const useLogout = () => {
         //dispatch logout action
         dispatch({ type: 'LOGOUT' });
 
-        navigate('/auth/login');
+        navigate('/auth/login')
         setTimeout(() => {
             toast.success('You has been logged out')
         }, 100);

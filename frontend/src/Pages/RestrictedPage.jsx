@@ -12,7 +12,7 @@ export const RestrictedPage = () => {
             </div>
             <div className='flex flex-col items-center space-y-2'>
                 <p className='text-xl font-lato tracking-wider z-10'>You must login first to access this page!</p>
-                <button className='bg-[#DFC298] py-2 px-4 tracking-wider rounded-md cursor-pointer z-10'><Link to={"/auth/login"}>Login</Link></button>
+                <Link to={'/auth/login'} className='bg-[#DFC298] py-2 px-4 tracking-wider rounded-sm cursor-pointer z-10'>Login</Link>
             </div>
         </div>
     )
