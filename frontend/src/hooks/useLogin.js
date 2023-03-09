@@ -37,7 +37,7 @@ export const useLogin = () => {
             localStorage.setItem('user', json.token);
 
             //update the auth context
-            dispatch({ type: 'LOGIN', payload: json })
+            dispatch({ type: 'LOGIN', payload: json.token })
             // console.log(json)
 
             navigate('/dashboard')

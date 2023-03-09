@@ -12,7 +12,7 @@ import { Link, useLocation } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { useAuthContext } from '../hooks/useAuthContext';
 
-export const SideBar = () => {
+export default function SideBar() {
     const { user } = useAuthContext();
     const { logout } = useLogout();
     const [open, setOpen] = useState(true);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SideBar } from '../Components/SideBar';
+import SideBar from '../Components/SideBar';
 import { SearchBar } from '../Components/SearchBar';
 import { CardTotalVotes } from '../Components/CardTotalVotes';
 import { CardWeather } from '../Components/CardWeather';

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { SideBar } from '../Components/SideBar';
+import SideBar from '../Components/SideBar';
 import RoomImg from '../Assets/hero-image.svg';
 import { HiOutlineKey } from 'react-icons/hi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { toast, ToastContainer } from 'react-toastify';
 import { getVoteByCode } from '../utils/fetcher';
