@@ -31,7 +31,7 @@ export const useLogin = () => {
         }
 
         if (response.ok) {
-            // const username = jwtDecode(json);
+            const username = jwtDecode(json.token);
 
             //save the user to local storage
             localStorage.setItem('user', json.token);
@@ -41,9 +41,9 @@ export const useLogin = () => {
             // console.log(json)
 
             navigate('/dashboard')
-            // setTimeout(() => {
-            //     toast(`Welcome ${username.name}`, { icon: "🚀" });
-            // }, 100);
+            setTimeout(() => {
+                toast(`Welcome ${username.name}`, { icon: "🚀" });
+            }, 100);
 
         }
     }
