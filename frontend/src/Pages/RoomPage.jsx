@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react'
+import { IoCopyOutline } from 'react-icons/io5';
 import { CandidateItem } from '../Components/CandidateItem';
 import { Timer } from '../Components/Timer';
 import { useAuthContext } from '../hooks/useAuthContext';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import useVote from '../hooks/useVote';
 import moment from 'moment';
 import { STATE_STARTED, STATE_ENDED, STATE_NOT_STARTED, STATE_LOADING } from '../utils/customState';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { createParticipantsByCode } from '../utils/fetcher';
+import useParticipant from '../hooks/useParticipants';
+import jwtDecode from 'jwt-decode';
 
 export default function RoomPage() {
     const { user } = useAuthContext();
     const { code } = useParams();
     const { data, isLoading, mutate: mutateVoteApi } = useVote(code, user);
+    const { data: dataParticipantApi, mutate: mutateParticipantApi } = useParticipant(code, user);
     const [currentState, setCurrentState] = useState(STATE_LOADING);
     const [status, setStatus] = useState('Waiting');
     const [selectedCandidate, setSelectedCandidate] = useState(null);
     const MySwal = withReactContent(Swal);
+    const decoded = jwtDecode(user);
     const navigate = useNavigate();
 
     const submitVote = async () => {
@@ -34,7 +39,8 @@ export default function RoomPage() {
         }
         createParticipantsByCode(data.payload.code, user, selectedCandidate.name).then(() => {
             mutateVoteApi();
-            navigate('/dashboard')
+            mutateParticipantApi();
+            // navigate('/dashboard')
             MySwal.fire({
                 icon: 'success',
                 title: 'sucessful Submit Vote',
@@ -72,6 +78,15 @@ export default function RoomPage() {
         }
     }, [data, currentState])
 
+    useEffect(() => {
+        if (dataParticipantApi && data) {
+            const candidate = data?.payload?.candidates?.find((candidate) => candidate.name === dataParticipantApi?.payload?.candidate);
+            if (candidate) {
+                setSelectedCandidate(candidate);
+            }
+        }
+    }, [dataParticipantApi, data])
+
     if (isLoading) {
         return <p>Loading...</p>;
     }
@@ -105,12 +120,42 @@ export default function RoomPage() {
                             isSelected={selectedCandidate?.name === candidate.name}
                             name={candidate.name}
                             onClick={() => {
-                                currentState === STATE_STARTED && setSelectedCandidate(candidate)
+                                if (decoded.name === data?.payload?.publisher) {
+                                    MySwal.fire({
+                                        icon: 'error',
+                                        title: 'failed',
+                                        text: 'Publisher cannot vote',
+                                        background: "#F9F5E7",
+                                        confirmButtonColor: "#473C33"
+                                    })
+                                    return;
+                                }
+                                !dataParticipantApi.data && currentState === STATE_STARTED && setSelectedCandidate(candidate)
                             }}
                         />
                     ))}
                 </div>
-                <button onClick={() => submitVote()} className='bg-[#C5AD8C] hover:bg-[#cbaa7c] px-3 py-1 rounded-sm'>Submit Vote</button>
+                {decoded.name !== data?.payload?.publisher && currentState === STATE_STARTED && !dataParticipantApi?.payload && (
+                    <button onClick={() => submitVote()} className='bg-[#C5AD8C] hover:bg-[#cbaa7c] px-3 py-1 rounded-sm'>Submit Vote</button>
+                )}
+                {decoded.name === data?.payload?.publisher && (
+                    <div className='flex flex-col items-center space-y-6'>
+                        <div className='space-y-2'>
+                            <p className='text-xl bg-slate-300 rounded-sm px-2'>You are a publisher</p>
+                            <p className='flex rounded-sm text-white justify-center items-center text-lg space-x-2 bg-slate-600'>
+                                <IoCopyOutline />
+                                <span>{data?.payload?.code}</span>
+                            </p>
+                        </div>
+                        <p><Link className='bg-[#C5AD8C] hover:bg-[#cbaa7c] rounded-sm text-lg px-4 py-1' to={'/dashboard'}>Back</Link></p>
+                    </div>
+                )}
+                {dataParticipantApi?.payload && (
+                    <div className='space-y-6 flex flex-col items-center'>
+                        <p className='text-xl bg-yellow-500 rounded-sm py-1 px-2'>Thank you for selecting the candidate</p>
+                        <p><Link className='bg-[#C5AD8C] hover:bg-[#cbaa7c] rounded-sm text-lg px-4 py-1' to={'/dashboard'}>Back</Link></p>
+                    </div>
+                )}
             </div>
         </div>
     );

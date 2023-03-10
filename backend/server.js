@@ -16,7 +16,7 @@ app.use(cors());
 //routes
 app.use("/api/user", authRoute);
 app.use("/api/vote", voteRoute);
-app.use("/api/particpant", participantRoute);
+app.use("/api/participant", participantRoute);
 
 //database
 mongoose.set('strictQuery', false);

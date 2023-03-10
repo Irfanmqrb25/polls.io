@@ -30,7 +30,7 @@ export const getVoteByCode = async (code, user) => {
 
 //create participants by code
 export const createParticipantsByCode = async (code, user, candidate) => {
-    await axios.post(`http://localhost:5000/api/particpant/participants/${code}`,
+    await axios.post(`http://localhost:5000/api/participant/participants/${code}`,
         {
             candidate: candidate,
         },
