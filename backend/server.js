@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoute from "./routes/authRoute.js";
 import voteRoute from "./routes/voteRoute.js";
+import participantRoute from "./routes/participantRoute.js";
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors());
 //routes
 app.use("/api/user", authRoute);
 app.use("/api/vote", voteRoute);
+app.use("/api/particpant", participantRoute);
 
 //database
 mongoose.set('strictQuery', false);

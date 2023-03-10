@@ -1,10 +1,10 @@
 import React from 'react';
 import { BsCheck2 } from 'react-icons/bs';
 
-export const CandidateItem = ({ name, gotVotes }) => {
+export const CandidateItem = ({ name, gotVotes, isSelected, onClick }) => {
     return (
         <div className='bg-[#DFC298] flex space-x-3 items-center py-3 px-7 w-[550px] rounded-sm'>
-            <div className='bg-zinc-200 rounded-full p-3 text-4xl'>
+            <div onClick={onClick} className={`cursor-pointer rounded-full p-3 text-4xl ${isSelected ? 'bg-green-600 text-white' : 'bg-zinc-200 hover:bg-green-600 hover:text-white'}`}>
                 <BsCheck2 />
             </div>
             <hr className='bg-black w-12 rotate-90' />

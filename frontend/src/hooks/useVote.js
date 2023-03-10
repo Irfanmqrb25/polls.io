@@ -13,11 +13,12 @@ export default function useVote(code, token) {
         }
     };
 
-    const { data, error } = useSWR(code ? `http://localhost:5000/api/vote/votes/${code}` : null, fetcher);
+    const { data, mutate, error } = useSWR(code ? `http://localhost:5000/api/vote/votes/${code}` : null, fetcher);
 
     return {
         data,
         error,
+        mutate,
         isLoading: !error && !data,
     };
 }

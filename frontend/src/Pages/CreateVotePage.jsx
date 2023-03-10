@@ -24,8 +24,8 @@ export const CreateVotePage = () => {
         { key: 1, name: "" },
         { key: 2, name: "" },
     ]);
-    const navigate = useNavigate()
-    const MySwal = withReactContent(Swal)
+    const navigate = useNavigate();
+    const MySwal = withReactContent(Swal);
 
     const submitCandidate = (candidate) => {
         setCandidates(

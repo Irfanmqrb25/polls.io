@@ -2,17 +2,48 @@ import React, { useState, useEffect } from 'react'
 import { CandidateItem } from '../Components/CandidateItem';
 import { Timer } from '../Components/Timer';
 import { useAuthContext } from '../hooks/useAuthContext';
-import { useParams } from 'react-router-dom';
-import useVote from '../lib/useVote';
+import { useNavigate, useParams } from 'react-router-dom';
+import useVote from '../hooks/useVote';
 import moment from 'moment';
 import { STATE_STARTED, STATE_ENDED, STATE_NOT_STARTED, STATE_LOADING } from '../utils/customState';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import { createParticipantsByCode } from '../utils/fetcher';
 
 export default function RoomPage() {
     const { user } = useAuthContext();
     const { code } = useParams();
-    const { data, isLoading } = useVote(code, user);
+    const { data, isLoading, mutate: mutateVoteApi } = useVote(code, user);
     const [currentState, setCurrentState] = useState(STATE_LOADING);
-    const [status, setStatus] = useState('Waiting')
+    const [status, setStatus] = useState('Waiting');
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
+    const MySwal = withReactContent(Swal);
+    const navigate = useNavigate();
+
+    const submitVote = async () => {
+        if (!selectedCandidate) {
+            return (
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'failed Submit Vote',
+                    text: 'Please choose one candidate',
+                    background: "#F9F5E7",
+                    confirmButtonColor: "#473C33"
+                })
+            )
+        }
+        createParticipantsByCode(data.payload.code, user, selectedCandidate.name).then(() => {
+            mutateVoteApi();
+            navigate('/dashboard')
+            MySwal.fire({
+                icon: 'success',
+                title: 'sucessful Submit Vote',
+                text: 'Thanks you for participating 👍🏼',
+                background: "#F9F5E7",
+                confirmButtonColor: "#473C33"
+            })
+        })
+    }
 
     useEffect(() => {
         if (data) {
@@ -39,7 +70,7 @@ export default function RoomPage() {
             }, 1000);
             return () => clearInterval(interval);
         }
-    }, [data])
+    }, [data, currentState])
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -68,11 +99,18 @@ export default function RoomPage() {
                 />
                 <p className='text-center tracking-wider font-light pt-10 2xl:pt-5'>Choose one:</p>
                 <div className='flex flex-col space-y-6'>
-                    <CandidateItem />
-                    <CandidateItem />
-                    <CandidateItem />
+                    {data.payload.candidates.map((candidate, i) => (
+                        <CandidateItem
+                            key={i}
+                            isSelected={selectedCandidate?.name === candidate.name}
+                            name={candidate.name}
+                            onClick={() => {
+                                currentState === STATE_STARTED && setSelectedCandidate(candidate)
+                            }}
+                        />
+                    ))}
                 </div>
-                <button className='bg-[#C5AD8C] px-3 py-1 rounded-sm'>Submit Vote</button>
+                <button onClick={() => submitVote()} className='bg-[#C5AD8C] hover:bg-[#cbaa7c] px-3 py-1 rounded-sm'>Submit Vote</button>
             </div>
         </div>
     );

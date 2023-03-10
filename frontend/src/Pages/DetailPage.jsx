@@ -3,7 +3,7 @@ import { CandidateItem } from '../Components/CandidateItem';
 import { Timer } from '../Components/Timer';
 import { useParams } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
-import useVote from '../lib/useVote';
+import useVote from '../hooks/useVote';
 import moment from "moment";
 import { STATE_STARTED, STATE_ENDED, STATE_NOT_STARTED, STATE_LOADING } from '../utils/customState';
 
