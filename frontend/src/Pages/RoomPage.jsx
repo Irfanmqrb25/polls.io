@@ -119,18 +119,20 @@ export default function RoomPage() {
                             key={i}
                             isSelected={selectedCandidate?.name === candidate.name}
                             name={candidate.name}
+                            gotVotes={candidate.votes}
+                            totalVotes={data?.payload?.totalVotes || 0}
                             onClick={() => {
                                 if (decoded.name === data?.payload?.publisher) {
                                     MySwal.fire({
                                         icon: 'error',
                                         title: 'failed',
-                                        text: 'Publisher cannot vote',
+                                        text: "Publisher can't vote",
                                         background: "#F9F5E7",
                                         confirmButtonColor: "#473C33"
                                     })
                                     return;
                                 }
-                                !dataParticipantApi.data && currentState === STATE_STARTED && setSelectedCandidate(candidate)
+                                !dataParticipantApi.payload && currentState === STATE_STARTED && setSelectedCandidate(candidate)
                             }}
                         />
                     ))}

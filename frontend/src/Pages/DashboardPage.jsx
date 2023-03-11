@@ -20,8 +20,7 @@ const DashboardPage = () => {
                 setVotes(data)
             });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [votes, user])
 
     return (
         <div className='flex bg-[#FBF8EE]'>

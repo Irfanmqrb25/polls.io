@@ -24,7 +24,7 @@ function App() {
         <Route path='/create-vote' element={user ? <CreateVotePage /> : <RestrictedPage />} />
         <Route path='/room' element={user ? <JoinRoomPage /> : <RestrictedPage />} />
         <Route path='/room/:code' element={user ? <RoomPage /> : <RestrictedPage />} />
-        <Route path='/vote/:code' element={<DetailPage />} />
+        <Route path='/vote/:code' element={user ? <DetailPage /> : <RestrictedPage />} />
       </Routes>
     </div>
   );

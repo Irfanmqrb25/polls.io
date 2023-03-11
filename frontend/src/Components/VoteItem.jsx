@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BsArrow90DegRight } from 'react-icons/bs';
-import { HiOutlineKey } from 'react-icons/hi';
+import { BsFillKeyFill } from 'react-icons/bs';
 
 export const VoteItem = ({ code, title, candidates, id }) => {
     return (
         <div className='shadow-vote-item w-full flex rounded-xl border-2 border-black bg-[#DFC298] justify-between items-center'>
             <div className='flex flex-col'>
-                <div className='px-3 text-white py-2 border-b-2 border-r-2 border-black bg-[#928979] font-lato font-semibold flex items-center rounded-br-xl rounded-tl-xl space-x-1'>
-                    <span className='text-xl'><HiOutlineKey /></span>
+                <div className='px-3 text-white py-2 border-b-2 border-r-2 border-black bg-[#928979] font-lato font-semibold flex items-center rounded-br-xl rounded-tl-xl space-x-2'>
+                    <span className='text-xl'><BsFillKeyFill /></span>
                     <p className='text-sm tracking-widest'>Code: {code}</p>
                 </div>
                 <div className='flex flex-col px-3 py-2'>
