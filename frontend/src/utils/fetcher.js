@@ -38,3 +38,22 @@ export const createParticipantsByCode = async (code, user, candidate) => {
             headers: { 'Authorization': `Bearer ${user}` },
         })
 }
+
+//update Vote
+export const updateVoteItem = async (user, title, startTime, endTime, candidates, code) => {
+    await axios.put(`http://localhost:5000/api/vote/votes/${code}`, {
+        title,
+        startTime,
+        endTime,
+        candidates,
+    }, {
+        headers: { 'Authorization': `Bearer ${user}` }
+    })
+}
+
+//soft delete vote
+export const softDeleteVote = async (user, code) => {
+    await axios.delete(`http://localhost:5000/api/vote/votes/${code}`, {
+        headers: { 'Authorization': `Bearer ${user}` }
+    })
+}

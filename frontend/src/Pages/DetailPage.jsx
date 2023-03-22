@@ -9,6 +9,10 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CiEdit } from 'react-icons/ci';
 import { MdOutlineDelete } from 'react-icons/md';
 import { AiOutlineStop } from 'react-icons/ai';
+import jwtDecode from 'jwt-decode';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import { getAllVotes, softDeleteVote } from '../utils/fetcher';
 
 import { CandidateItemDetail } from '../Components/CandidateItemDetail';
 
@@ -20,6 +24,8 @@ export default function DetailPage() {
     const [status, setStatus] = useState('Waiting');
     const navigate = useNavigate();
 
+    const decoded = jwtDecode(user);
+    const MySwal = withReactContent(Swal);
 
     useEffect(() => {
         if (data) {
@@ -48,9 +54,56 @@ export default function DetailPage() {
         }
     }, [data, currentState])
 
+    const handleEdit = () => {
+        if (currentState === STATE_STARTED) {
+            MySwal.fire({
+                icon: 'error',
+                title: 'Failed Edit Vote',
+                text: 'Can not edit vote when on progress',
+                showConfirmButton: false,
+                timer: 1500,
+                background: "#F9F5E7",
+                confirmButtonColor: "#473C33"
+            })
+            return;
+        }
+        if (currentState === STATE_ENDED) {
+            MySwal.fire({
+                icon: 'error',
+                title: 'Failed Edit Vote',
+                text: 'Voting is over',
+                showConfirmButton: false,
+                timer: 1500,
+                background: "#F9F5E7",
+                confirmButtonColor: "#473C33"
+            })
+            return;
+        }
+        navigate(`/edit-vote/${code}`)
+    }
+
+    const handleSoftDelete = () => {
+        softDeleteVote(user, code).then(() => {
+            navigate('/dashboard')
+            MySwal.fire({
+                icon: 'success',
+                title: 'Vote was successfully deleted',
+                background: "#F9F5E7",
+                confirmButtonColor: "#473C33"
+            })
+        }).then(() => {
+            getAllVotes(user);
+        });
+    }
+
+
+    if (decoded.name !== data?.payload?.publisher) {
+        navigate('/dashboard')
+        return;
+    }
 
     if (isLoading) {
-        return <p>Loading...</p>;
+        return <div>Loading...</div>;
     }
 
 
@@ -96,11 +149,11 @@ export default function DetailPage() {
                     <AiOutlineStop className='text-xl' />
                     <p>Close Vote</p>
                 </button>
-                <button className='flex items-center px-3 py-1 bg-yellow-500 rounded-sm space-x-1'>
+                <button onClick={() => handleEdit()} className='flex items-center px-3 py-1 bg-yellow-500 rounded-sm space-x-1'>
                     <CiEdit className='text-xl' />
                     <p>Edit Vote</p>
                 </button>
-                <button className='flex items-center px-3 py-1 bg-red-600 rounded-sm'>
+                <button onClick={() => handleSoftDelete()} className='flex items-center px-3 py-1 bg-red-600 rounded-sm'>
                     <MdOutlineDelete className='text-xl' />
                     <p>Delete Vote</p>
                 </button>

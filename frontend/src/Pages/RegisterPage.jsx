@@ -8,6 +8,10 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useSignup } from '../hooks/useSignup';
 import { ToastContainer } from 'react-toastify';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
 
 
 export const RegisterPage = () => {
@@ -16,6 +20,10 @@ export const RegisterPage = () => {
     const [password, setpassword] = useState("");
     const [selectedCountry, setSelectedCountry] = useState("");
     const { signup } = useSignup();
+    const [showPassword, setShowPassword] = useState(false);
+
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const Register = async (e) => {
         e.preventDefault();
@@ -30,7 +38,27 @@ export const RegisterPage = () => {
                 <Box onSubmit={Register} component="form" sx={{ display: 'flex', flexDirection: 'column', rowGap: 2 }}>
                     <TextField type='text' label="Username" variant="outlined" value={username} onChange={(e) => setusername(e.target.value)} />
                     <TextField type='email' label="Email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <TextField type='password' label="Password" variant="outlined" value={password} onChange={(e) => setpassword(e.target.value)} />
+                    <FormControl>
+                        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password"
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => setpassword(e.target.value)}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <MdOutlineVisibilityOff /> : <MdOutlineVisibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label="Password"
+                        />
+                    </FormControl>
                     <FormControl>
                         <InputLabel id="country">Choose a country</InputLabel>
                         <Select

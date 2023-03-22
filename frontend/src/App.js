@@ -10,6 +10,7 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import { RestrictedPage } from "./Pages/RestrictedPage";
 import 'react-toastify/dist/ReactToastify.css';
 import DetailPage from "./Pages/DetailPage";
+import EditVotePage from "./Pages/EditVotePage";
 
 function App() {
   const { user } = useAuthContext();
@@ -25,6 +26,7 @@ function App() {
         <Route path='/room' element={user ? <JoinRoomPage /> : <RestrictedPage />} />
         <Route path='/room/:code' element={user ? <RoomPage /> : <RestrictedPage />} />
         <Route path='/vote/:code' element={user ? <DetailPage /> : <RestrictedPage />} />
+        <Route path='/edit-vote/:code' element={user ? <EditVotePage /> : <RestrictedPage />} />
       </Routes>
     </div>
   );

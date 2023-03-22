@@ -35,8 +35,9 @@ export const getVotes = async (req, res) => {
 //get votes by code
 export const getVoteByCode = async (req, res) => {
     const { code } = req.params;
+    const publisher = req.user.name;
     try {
-        const vote = await Vote.findOne({ code: code, deletedAt: null });
+        const vote = await Vote.findOne({ code, deletedAt: null });
         if (!vote) {
             return res.status(404).json({ message: 'Data not found' });
         }
@@ -64,11 +65,48 @@ export const getVoteByCode = async (req, res) => {
             totalVotes: candidates ? candidates?.reduce((acc, candidate) => acc + (candidate.votes ? candidate.votes : 0), 0) : 0,
         }
 
+        //validate the user and votes
+        // if (publisher !== vote.publisher) {
+        //     return res.status(403).json({ message: 'Forbidden, Access Denied!' })
+        // }
+
         res.json({ msg: 'Get Vote Successfully', payload: clientVote });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({ message: err.message });
     }
 };
+
+//update Vote
+export const updateVote = async (req, res) => {
+    try {
+        const { code } = req.params;
+        const { title, candidates, startTime, endTime } = req.body;
+
+        const result = await Vote.updateOne(
+            { code },
+            { $set: { title, startTime, endTime, candidates } },
+            { new: true }
+        );
+
+        res.status(200).json({ msg: 'Vote updated successfully', payload: result });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+//soft delete vote
+export const softDelete = async (req, res) => {
+    try {
+        const vote = await Vote.updateOne(
+            { code: req.params.code },
+            { deletedAt: Date.now() }
+        );
+        res.status(200).json({ message: 'Delete Vote Success', payload: vote });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
 
 

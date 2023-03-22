@@ -20,7 +20,7 @@ const DashboardPage = () => {
                 setVotes(data)
             });
         }
-    }, [votes, user])
+    }, [])
 
     return (
         <div className='flex bg-[#FBF8EE]'>
